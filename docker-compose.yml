@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+    php:
+        container_name: php
+        build:
+            context: ./
+            dockerfile: Dockerfile
+        depends_on:
+            - database
+        volumes:
+            - ./:/var/www/html/
+        ports:
+            - 80:80
+    database:
+        container_name: database
+        image: mysql
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: assignment1
+            MYSQL_USER: user1
+            MYSQL_PASSWORD: user1
+        ports:
+            - "9906:3306"
+        volumes:
+            - ./database.sql:/docker-entrypoint-initdb.d/0_init.sql
+    phpmyadmin:
+     container_name: phpmyadmin-container
+     image: phpmyadmin/phpmyadmin
+     ports:
+       - 8080:80
+     restart: always
+     environment:
+       PMA_HOST: database
+     depends_on:
+       - database
